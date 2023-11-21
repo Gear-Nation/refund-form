@@ -60,6 +60,7 @@ export default function DropdownMenu() {
         >
           <div className='py-1'>
             {isAdmin && <DropdownMenuItem href={'/create-user'}>Create User</DropdownMenuItem>}
+            {isAdmin && <DropdownMenuItem href='/completed-forms'>View Fulfilled Forms</DropdownMenuItem>}
             {isAdmin && <DropdownMenuItem href='/view-forms'>View Unfulfilled Forms</DropdownMenuItem>}
             <Menu.Button
               className={
