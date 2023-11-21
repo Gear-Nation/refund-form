@@ -13,12 +13,11 @@ export async function createUser(formState: CreateUserFormType) {
 
   const { error: whitelistError } = await supabase
     .from('whitelist')
-    .insert([{ email: formState.email.trim().toLowerCase() }, { isAdmin: formState.isAdmin }]);
+    .insert([{ email: formState.email.trim().toLowerCase(), isAdmin: formState.isAdmin }]);
   const { error: employeeError } = await supabase
     .from('employees')
     .insert([
-      { email: formState.email.trim().toLowerCase() },
-      { name: `${(formState.firstName.trim(), formState.lastName.trim())}` }
+      { email: formState.email.trim().toLowerCase(), name: `${formState.firstName.trim() formState.lastName.trim()}` },
     ]);
 
   if (whitelistError || employeeError) {

@@ -18,7 +18,5 @@ export default async function Home() {
     redirect('/login');
   }
 
-  console.log(session);
-
   return <RefundForm />;
 }
