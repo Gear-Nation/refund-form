@@ -35,6 +35,7 @@ export default function LoginForm() {
     router.refresh();
     setLoading(false);
   }
+
   return (
     <form className='w-full flex flex-col gap-4' onSubmit={(e) => handleSignIn(e)}>
       <Input

@@ -14,6 +14,7 @@ export default function SignUpForm() {
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const [formState, setFormState] = useState({
     email: '',
@@ -24,6 +25,19 @@ export default function SignUpForm() {
   async function handleSignUp(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
+
+    const { data: whitelist } = await supabase
+      .from('whitelist')
+      .select('*')
+      .match({ email: formState.email.toLowerCase().trim() })
+      .single();
+
+    if (!whitelist) {
+      alert('You are not permitted to view the content of this site, please contact the administrator');
+      setLoading(false);
+      return;
+    }
+
     const { error } = await supabase.auth.signUp({
       email: formState.email.trim().toLowerCase(),
       password: formState.password.trim(),
@@ -35,10 +49,21 @@ export default function SignUpForm() {
       alert('Something went wrong, please try again');
       console.log(error);
       setLoading(false);
+    } else {
+      setSuccess(true);
+      setLoading(false);
     }
-    router.refresh();
-    setLoading(false);
   }
+
+  if (success) {
+    return (
+      <p className='text-2xl text-center'>
+        Your account was successfully created, please check your email to confirm your account before attempting to
+        login!
+      </p>
+    );
+  }
+
   return (
     <form className='w-full flex flex-col gap-4' onSubmit={(e) => handleSignUp(e)}>
       <Input

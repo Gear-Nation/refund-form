@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import React from 'react';
+import DropdownMenu from './DropdownMenu';
 
 export default function Header() {
   return (
@@ -8,6 +9,8 @@ export default function Header() {
         <Link href='/'>
           <p>Refund Form</p>
         </Link>
+        <div className='flex-1' />
+        <DropdownMenu />
       </nav>
     </header>
   );
