@@ -30,13 +30,13 @@ export default function CreateUserForm() {
 
   async function handleCreateUser(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (formState.email !== confirmFormState.email) {
+    if (formState.email.toLowerCase().trim() !== confirmFormState.email.toLowerCase().trim()) {
       alert('Emails do not match');
       return;
-    } else if (formState.firstName !== confirmFormState.firstName) {
+    } else if (formState.firstName.trim() !== confirmFormState.firstName.trim()) {
       alert('First names do not match');
       return;
-    } else if (formState.lastName !== confirmFormState.lastName) {
+    } else if (formState.lastName.trim() !== confirmFormState.lastName.trim()) {
       alert('Last names do not match');
       return;
     } else if (formState.isAdmin) {
@@ -52,6 +52,11 @@ export default function CreateUserForm() {
         firstName: '',
         lastName: '',
         isAdmin: false
+      });
+      setConfirmFormState({
+        email: '',
+        firstName: '',
+        lastName: ''
       });
       setLoading(false);
     } else {
