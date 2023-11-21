@@ -8,7 +8,6 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import SelectInput from './SelectInput';
 
 export type FormType = {
-  todaysDate: string;
   dateOfOrder: string;
   orderNumber: string;
   productSpecialistSoldOrder: string;
@@ -21,7 +20,6 @@ export default function RefundForm() {
   const [loading, setLoading] = useState(false);
   const [employeeName, setEmployeeName] = useState('' as string | undefined | null);
   const [formState, setFormState] = useState<FormType>({
-    todaysDate: '',
     dateOfOrder: '',
     orderNumber: '',
     productSpecialistSoldOrder: '',
@@ -54,7 +52,6 @@ export default function RefundForm() {
     if (success) {
       alert('Form submitted successfully');
       setFormState({
-        todaysDate: '',
         dateOfOrder: '',
         orderNumber: '',
         productSpecialistSoldOrder: '',
@@ -71,12 +68,6 @@ export default function RefundForm() {
 
   return (
     <form className='flex w-full flex-col items-center gap-4' onSubmit={(e) => handleSubmit(e)}>
-      <Input
-        label="Today's Date"
-        name='todaysDate'
-        value={formState.todaysDate}
-        onchange={(e) => setFormState({ ...formState, todaysDate: e.target.value })}
-      />
       <Input
         label='Order Date'
         name='orderDate'

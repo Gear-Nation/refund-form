@@ -47,7 +47,7 @@ export default function ManagerRefundForm({ formData, managerName, id }: Props) 
     orderMovedToRefundRequestedFolderInS4SDate: formData.orderMovedToRefundRequestedFolderInS4SDate ?? '',
     givenToDataAnalysisForLostSaleAccountabilityDate: formData.givenToDataAnalysisForLostSaleAccountabilityDate ?? '',
     callsDownloadedAndSavedDate: formData.callsDownloadedAndSavedDate ?? '',
-    reviewed: false,
+    reviewed: formData.reviewed ?? false,
     generalManagerSignOff: ''
   });
 
