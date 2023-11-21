@@ -4,6 +4,7 @@ import { cookies } from 'next/headers';
 import type { RefundFormType } from '../../../../types/refundForm';
 import { capitalizeFirstLetters } from '@/app/utils/capitalizeFirstLetter';
 import ManagerRefundForm from '@/app/components/ManagerRefundForm';
+import { redirect } from 'next/navigation';
 
 export default async function Page({ params }: { params: { id: string } }) {
   const { id } = params;
@@ -17,7 +18,11 @@ export default async function Page({ params }: { params: { id: string } }) {
     data: { user }
   } = await supabase.auth.getUser();
   const userEmail = user?.email;
+
+  const { data: isAdmin } = await supabase.from('whitelist').select('isAdmin').match({ email: userEmail }).single();
   const { data: userName } = await supabase.from('employees').select('name').match({ email: userEmail }).single();
+
+  if (!isAdmin) redirect('/');
 
   const { data } = await supabase.from('refundRequests').select('*').match({ id }).single();
 
