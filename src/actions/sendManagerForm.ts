@@ -10,7 +10,6 @@ export async function sendManagerForm(formState: ManagerFormType, name: string, 
 
   const { error } = await supabase.from('refundRequests').update([formState]).match({ id });
   if (error) {
-    console.log('this is the error::::::', error);
     return false;
   } else {
     return true;
