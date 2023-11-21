@@ -1,95 +1,65 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Listbox } from '@headlessui/react';
 import { createForm } from '@/actions/sendForm';
 import Input from './Input';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 export type FormType = {
-  refundType: string;
-  paymentMethod: string;
-  refundAmount: string;
-  amountDeduction: string;
   todaysDate: string;
   dateOfOrder: string;
   orderNumber: string;
   productSpecialistSoldOrder: string;
   customerName: string;
-  employeeFillingOutForm: string;
   reasonForRefund: string[];
   typeOfReturn: string;
-  managerThatSpokeToCustomer: string;
-  wasTheOrderSaved: string;
-  managerSpokeDate: string;
-  emailedCustomerToSaveOrderDate: string;
-  orderCancelledWithWarehouseDate: string;
-  productionPartsNotifiedDate: string;
-  refundSubmittedInAlfabotDate: string;
-  orderMovedToRefundRequestedFolderInS4SDate: string;
-  givenToDataAnalysisForLostSaleAccountabilityDate: string;
-  callsDownloadedAndSavedDate: string;
-  generalManagerSignOff: string;
 };
 
 export default function RefundForm() {
   const [loading, setLoading] = useState(false);
+  const [employeeName, setEmployeeName] = useState('' as string | undefined | null);
   const [formState, setFormState] = useState<FormType>({
-    refundType: '',
-    paymentMethod: '',
-    refundAmount: '',
-    amountDeduction: 'order in full',
     todaysDate: '',
     dateOfOrder: '',
     orderNumber: '',
     productSpecialistSoldOrder: '',
     customerName: '',
-    employeeFillingOutForm: '',
     reasonForRefund: [],
-    typeOfReturn: '',
-    managerThatSpokeToCustomer: '',
-    wasTheOrderSaved: '',
-    managerSpokeDate: '',
-    emailedCustomerToSaveOrderDate: '',
-    orderCancelledWithWarehouseDate: '',
-    productionPartsNotifiedDate: '',
-    refundSubmittedInAlfabotDate: '',
-    orderMovedToRefundRequestedFolderInS4SDate: '',
-    givenToDataAnalysisForLostSaleAccountabilityDate: '',
-    callsDownloadedAndSavedDate: '',
-    generalManagerSignOff: ''
+    typeOfReturn: ''
   });
+
+  const supabase = createClientComponentClient({
+    supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_API,
+    supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL
+  });
+
+  useEffect(() => {
+    async function getEmployeeName() {
+      const userEmail = (await supabase.auth.getUser()).data.user?.email;
+
+      const { data } = await supabase.from('employees').select('name').match({ email: userEmail }).single();
+      setEmployeeName(data?.name);
+    }
+    getEmployeeName();
+  }, [supabase]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setLoading(true);
     if (!confirm('Are you sure you want to submit this form?')) return setLoading(false);
-    const success = await createForm(formState);
+
+    const success = await createForm(formState, employeeName!);
     if (success) {
       alert('Form submitted successfully');
       setFormState({
-        refundType: '',
-        paymentMethod: '',
-        refundAmount: '',
-        amountDeduction: 'order in full',
         todaysDate: '',
         dateOfOrder: '',
         orderNumber: '',
         productSpecialistSoldOrder: '',
         customerName: '',
-        employeeFillingOutForm: '',
         reasonForRefund: [],
-        typeOfReturn: '',
-        managerThatSpokeToCustomer: '',
-        wasTheOrderSaved: '',
-        managerSpokeDate: '',
-        emailedCustomerToSaveOrderDate: '',
-        orderCancelledWithWarehouseDate: '',
-        productionPartsNotifiedDate: '',
-        refundSubmittedInAlfabotDate: '',
-        orderMovedToRefundRequestedFolderInS4SDate: '',
-        givenToDataAnalysisForLostSaleAccountabilityDate: '',
-        callsDownloadedAndSavedDate: '',
-        generalManagerSignOff: ''
+        typeOfReturn: ''
       });
       setLoading(false);
     } else {
@@ -100,45 +70,6 @@ export default function RefundForm() {
 
   return (
     <form className='flex w-full flex-col items-center gap-4' onSubmit={(e) => handleSubmit(e)}>
-      <SelectInput
-        label='Refund Type'
-        name='refundType'
-        value={formState.refundType}
-        onchange={(e) => setFormState({ ...formState, refundType: e.target.value })}
-      >
-        <option value=''>Select Refund Type</option>
-        <option value='partial refund'>Partial Refund</option>
-        <option value={'cancellation'}>Cancellation</option>
-        <option value={'authorized return'}>Authorized Return</option>
-        <option value='chargeback'>Chargeback</option>
-      </SelectInput>
-      <SelectInput
-        label='Payment Method'
-        name='paymentMethod'
-        value={formState.paymentMethod}
-        onchange={(e) => setFormState({ ...formState, paymentMethod: e.target.value })}
-      >
-        <option value=''>Select Payment Method</option>
-        <option value='credit card secure'>Credit Card Secure</option>
-        <option value={'intuit'}>Intuit</option>
-        <option value={'stripe'}>Stripe</option>
-        <option value='check'>Check</option>
-        <option value='affirm'>Affirm</option>
-        <option value='payTomorrow'>PayTomorrow</option>
-        <option value='Shift4Payments'>Shift4Payments</option>
-        <option value={'square'}>Square</option>
-      </SelectInput>
-      <SelectInput
-        label='Refund Deduction'
-        name='refundDeduction'
-        value={formState.amountDeduction}
-        onchange={(e) => setFormState({ ...formState, amountDeduction: e.target.value })}
-      >
-        <option value='order in full'>Order in Full</option>
-        <option value='minus 25% fee'>Minus 25% Fee</option>
-        <option value={'minus processing fee'}>Minus Processing Fee</option>
-        <option value={'custom amount'}>Custom Amount</option>
-      </SelectInput>
       <Input
         label="Today's Date"
         name='todaysDate'
@@ -169,12 +100,6 @@ export default function RefundForm() {
         value={formState.customerName}
         onchange={(e) => setFormState({ ...formState, customerName: e.target.value })}
       />
-      <Input
-        label='Employee Filing Out Form'
-        name='employeeFillingOutForm'
-        value={formState.employeeFillingOutForm}
-        onchange={(e) => setFormState({ ...formState, employeeFillingOutForm: e.target.value })}
-      />
       <MultiSelectDropdown formState={formState} setFormState={setFormState} />
       <SelectInput
         value={formState.typeOfReturn}
@@ -189,80 +114,6 @@ export default function RefundForm() {
         <option value={'engine'}>Engine</option>
         <option value={'transfer case'}>Transfer Case</option>
       </SelectInput>
-      <Input
-        label='Manager That Spoke to Customer'
-        name='managerThatSpokeToCustomer'
-        onchange={(e) => setFormState({ ...formState, managerThatSpokeToCustomer: e.target.value })}
-        value={formState.managerThatSpokeToCustomer}
-      />
-      <Input
-        label='Date Manager Spoke to Customer'
-        name='dateManagerSpokeToCustomer'
-        onchange={(e) => setFormState({ ...formState, managerSpokeDate: e.target.value })}
-        value={formState.managerSpokeDate}
-      />
-      <SelectInput
-        value={formState.wasTheOrderSaved}
-        label='Was The Order Saved'
-        name='orderSaved'
-        onchange={(e) => setFormState({ ...formState, wasTheOrderSaved: e.target.value })}
-      >
-        <option value={''}>Select an Option</option>
-        <option value={'yes'}>Yes</option>
-        <option value={'no'}>No</option>
-      </SelectInput>
-      <Input
-        name='emailedCustomerToSaveOrderDate'
-        value={formState.emailedCustomerToSaveOrderDate}
-        label='Emailed Customer to Save Order, Date'
-        onchange={(e) => setFormState({ ...formState, emailedCustomerToSaveOrderDate: e.target.value })}
-      />
-      <Input
-        required={false}
-        name='orderCanceledWithWarehouseDate'
-        value={formState.orderCancelledWithWarehouseDate}
-        label='Order Cancelled with Warehouse, if Applicable, Date'
-        onchange={(e) => setFormState({ ...formState, orderCancelledWithWarehouseDate: e.target.value })}
-      />
-      <Input
-        required={false}
-        name='productPartsNotifiedDate'
-        value={formState.productionPartsNotifiedDate}
-        label='Production/Parts Notified, if Applicable, Date'
-        onchange={(e) => setFormState({ ...formState, productionPartsNotifiedDate: e.target.value })}
-      />
-      <Input
-        name='refundSubmittedInAlfabotDate'
-        value={formState.refundSubmittedInAlfabotDate}
-        label='Refund Submitted In Alfabot, Date'
-        onchange={(e) => setFormState({ ...formState, refundSubmittedInAlfabotDate: e.target.value })}
-      />
-      <Input
-        name='orderMovedToRefundRequestedFolderInS4SDate'
-        value={formState.orderMovedToRefundRequestedFolderInS4SDate}
-        label='Order Moved to Refund Requested Folder in S4S, Date'
-        onchange={(e) => setFormState({ ...formState, orderMovedToRefundRequestedFolderInS4SDate: e.target.value })}
-      />
-      <Input
-        name='givenToDataAnalysisForLostSaleAccountabilityDate'
-        value={formState.givenToDataAnalysisForLostSaleAccountabilityDate}
-        label='Given to Data Analysis for Lost Sale Accountability, Date'
-        onchange={(e) =>
-          setFormState({ ...formState, givenToDataAnalysisForLostSaleAccountabilityDate: e.target.value })
-        }
-      />
-      <Input
-        name='callsDownloadedAndSavedDate'
-        value={formState.callsDownloadedAndSavedDate}
-        label='Calls Downloaded and Saved, Date'
-        onchange={(e) => setFormState({ ...formState, callsDownloadedAndSavedDate: e.target.value })}
-      />
-      <Input
-        name='generalManagerSignOff'
-        value={formState.generalManagerSignOff}
-        label='General Manager Sign Off, Date'
-        onchange={(e) => setFormState({ ...formState, generalManagerSignOff: e.target.value })}
-      />
       <button
         className='bg-trueBlue hover:bg-powderBlue hover:text-jet transition-all duration-200 ease-in-out w-full px-2 py-3 rounded-md'
         type='submit'

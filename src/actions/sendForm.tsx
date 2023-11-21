@@ -1,17 +1,12 @@
 'use server';
 
 import { FormType } from '@/app/components/RefundForm';
-import { createServerActionClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { supabase } from '@/app/utils/supabase';
 
-export async function createForm(formState: FormType) {
-  const supabase = createServerActionClient(
-    { cookies },
-    { supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_API, supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL }
-  );
-
-  const { error } = await supabase.from('refundRequests').insert([formState]);
+export async function createForm(formState: FormType, name: string) {
+  const { error } = await supabase.from('refundRequests').insert([{ ...formState, employeeFillingOutForm: name }]);
   if (error) {
+    console.log(error);
     return false;
   } else {
     return true;

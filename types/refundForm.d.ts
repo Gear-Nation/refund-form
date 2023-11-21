@@ -1,0 +1,27 @@
+export type RefundFormType = {
+  created_at: string;
+  id: number;
+  refundType: string | null;
+  paymentMethod: string | null;
+  refundAmount: string | null;
+  amountDeduction: string | null;
+  dateOfOrder: string | null;
+  orderNumber: string | null;
+  productSpecialistSoldOrder: string | null;
+  customerName: string | null;
+  employeeFillingOutForm: string | null;
+  reasonForRefund: string[] | null;
+  typeOfReturn: string | null;
+  managerThatSpokeToCustomer: string | null;
+  wasTheOrderSaved: string | null;
+  managerSpokeDate: string | null;
+  emailedCustomerToSaveOrderDate: string | null;
+  orderCancelledWithWarehouseDate: string | null;
+  productionPartsNotifiedDate: string | null;
+  refundSubmittedInAlfabotDate: string | null;
+  orderMovedToRefundRequestedFolderInS4SDate: string | null;
+  givenToDataAnalysisForLostSaleAccountabilityDate: string | null;
+  callsDownloadedAndSavedDate: string | null;
+  generalManagerSignOff: string | null;
+  reviewed: boolean;
+};
