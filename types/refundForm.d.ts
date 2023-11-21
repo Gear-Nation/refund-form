@@ -10,7 +10,7 @@ export type RefundFormType = {
   productSpecialistSoldOrder: string | null;
   customerName: string | null;
   employeeFillingOutForm: string | null;
-  reasonForRefund: string[] | null;
+  reasonForRefund: string | null;
   typeOfReturn: string | null;
   managerThatSpokeToCustomer: string | null;
   wasTheOrderSaved: string | null;
