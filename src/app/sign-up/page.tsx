@@ -1,8 +1,15 @@
 import Link from 'next/link';
 import LoginForm from '../components/LoginForm';
 import SignUpForm from '../components/SignUpForm';
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 
 export default async function Page() {
+  const supabase = createServerComponentClient(
+    { cookies },
+    { supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL, supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_API }
+  );
+
   return (
     <div>
       <h1 className='text-center text-2xl underline underline-offset-4 mb-4'>Sign Up</h1>

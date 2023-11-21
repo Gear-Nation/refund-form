@@ -26,7 +26,10 @@ export default function SignUpForm() {
     setLoading(true);
     const { error } = await supabase.auth.signUp({
       email: formState.email.trim().toLowerCase(),
-      password: formState.password.trim()
+      password: formState.password.trim(),
+      options: {
+        emailRedirectTo: `${location.origin}/auth/callback`
+      }
     });
     if (error) {
       alert('Something went wrong, please try again');
