@@ -25,6 +25,7 @@ export async function createUser(formState: CreateUserFormType) {
     console.log({ error: whitelistError || employeeError });
     return false;
   } else {
+    await sendEmail(formState.email.trim().toLowerCase());
     return true;
   }
 }
@@ -36,6 +37,22 @@ function sendEmail(email: string) {
       auth: {
         user: process.env.NODEMAILER_EMAIL,
         pass: process.env.NODEMAILER_EMAIL_PW
+      }
+    });
+
+    const mailConfigs = {
+      from: process.env.NODEMAILER_EMAIL,
+      to: email,
+      subject: 'You have been invited to join a Monster Transmission & Performance Internal Tool',
+      html: `<p>Please click the link below to sign up for this tool and follow all instructions presented on the screen.</p><br /><br /><a href='https://refund-form.vercel.app/sign-up'>Click Here to Sign Up!</a>`
+    };
+
+    transporter.sendMail(mailConfigs, function (err, info) {
+      if (err) {
+        console.log(err);
+        reject(err);
+      } else {
+        resolve(info);
       }
     });
   });
