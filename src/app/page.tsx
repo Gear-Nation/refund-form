@@ -10,11 +10,15 @@ export default async function Home() {
     { supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_API, supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL }
   );
 
-  const { data: session } = await supabase.auth.getSession();
+  const {
+    data: { session }
+  } = await supabase.auth.getSession();
 
   if (!session) {
     redirect('/login');
   }
+
+  console.log(session);
 
   return <RefundForm />;
 }
