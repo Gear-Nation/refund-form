@@ -3,9 +3,10 @@
 import React, { useState } from 'react';
 import Input from './Input';
 import SelectInput from './SelectInput';
-import { sendManagerForm } from '@/actions/sendManagerForm';
-import { Switch } from '@headlessui/react';
+import { sendManagerForm, sendDeniedEmail } from '@/actions/sendManagerForm';
 import { RefundFormType } from '../../../types/refundForm';
+import TextArea from './TextArea';
+import { useRouter } from 'next/navigation';
 
 export type ManagerFormType = {
   refundType: string;
@@ -21,8 +22,11 @@ export type ManagerFormType = {
   orderMovedToRefundRequestedFolderInS4SDate: string;
   givenToDataAnalysisForLostSaleAccountabilityDate: string;
   callsDownloadedAndSavedDate: string;
-  reviewed: boolean;
   generalManagerSignOff: string;
+  approved: boolean;
+  denied: boolean;
+  whyApprovedDenied: string;
+  approvedDeniedDate: string;
 };
 
 interface Props {
@@ -33,6 +37,7 @@ interface Props {
 
 export default function ManagerRefundForm({ formData, managerName, id }: Props) {
   const [loading, setLoading] = useState(false);
+  const [notesModalOpen, setNotesModelOpen] = useState(false);
   const [formState, setFormState] = useState({
     refundType: formData.refundType ?? '',
     paymentMethod: formData.paymentMethod ?? '',
@@ -47,17 +52,25 @@ export default function ManagerRefundForm({ formData, managerName, id }: Props) 
     orderMovedToRefundRequestedFolderInS4SDate: formData.orderMovedToRefundRequestedFolderInS4SDate ?? '',
     givenToDataAnalysisForLostSaleAccountabilityDate: formData.givenToDataAnalysisForLostSaleAccountabilityDate ?? '',
     callsDownloadedAndSavedDate: formData.callsDownloadedAndSavedDate ?? '',
-    reviewed: formData.reviewed ?? false,
-    generalManagerSignOff: ''
+    denied: formData.denied ?? false,
+    approved: formData.approved ?? false,
+    generalManagerSignOff: '',
+    whyApprovedDenied: '',
+    approvedDeniedDate: ''
   });
+  const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    if (formState.reviewed && !confirm('Are you sure you want to complete this form?')) return;
+    if (!confirm('Are you sure you want to update this form?')) return;
     e.preventDefault();
     setLoading(true);
+    if (formState.denied) {
+      sendDeniedEmail(formData.employeeFillingOutForm ?? '', formState.whyApprovedDenied, formData.orderNumber ?? '');
+    }
     const success = await sendManagerForm(formState, managerName, id);
     if (success) {
       alert('Form updated successfully');
+      router.refresh();
       setLoading(false);
     } else {
       alert('There was an error submitting the form');
@@ -65,11 +78,49 @@ export default function ManagerRefundForm({ formData, managerName, id }: Props) 
     }
   }
 
+  async function handleApprove() {
+    const date = new Date();
+    setFormState({
+      ...formState,
+      approved: !formState.approved,
+      denied: false,
+      approvedDeniedDate: date.toLocaleDateString()
+    });
+    setNotesModelOpen(true);
+  }
+
+  async function handleDenied() {
+    const date = new Date();
+    setFormState({
+      ...formState,
+      denied: !formState.denied,
+      approved: false,
+      approvedDeniedDate: date.toLocaleDateString()
+    });
+    setNotesModelOpen(true);
+  }
+
   return (
     <form
-      className='w-full flex flex-col items-center gap-5 border-2 border-trueBlue rounded-md p-5'
+      className='w-full flex flex-col items-center gap-5 border-2 border-trueBlue rounded-md p-5 relative'
       onSubmit={(e) => handleSubmit(e)}
     >
+      {notesModalOpen && (
+        <div className='absolute w-full bg-jet/70 backdrop-blur h-full top-0 rounded-md p-5 flex flex-col gap-5'>
+          <TextArea
+            label={formState.approved ? 'Reason for approval' : 'Reason for denial'}
+            name='approvedDeniedNotes'
+            value={formState.whyApprovedDenied}
+            onchange={(e) => setFormState({ ...formState, whyApprovedDenied: e.target.value })}
+          />
+          <button
+            className='bg-trueBlue hover:bg-powderBlue hover:text-jet transition-all duration-200 ease-in-out w-full px-2 py-3 rounded-md'
+            type='submit'
+          >
+            {loading ? 'Submitting...' : 'Submit'}
+          </button>
+        </div>
+      )}
       <SelectInput
         label='Refund Type'
         name='refundType'
@@ -155,12 +206,6 @@ export default function ManagerRefundForm({ formData, managerName, id }: Props) 
         onchange={(e) => setFormState({ ...formState, productionPartsNotifiedDate: e.target.value })}
       />
       <Input
-        name='refundSubmittedInAlfabotDate'
-        value={formState.refundSubmittedInAlfabotDate}
-        label='Refund Submitted In Alfabot, Date'
-        onchange={(e) => setFormState({ ...formState, refundSubmittedInAlfabotDate: e.target.value })}
-      />
-      <Input
         name='orderMovedToRefundRequestedFolderInS4SDate'
         value={formState.orderMovedToRefundRequestedFolderInS4SDate}
         label='Order Moved to Refund Requested Folder in S4S, Date'
@@ -182,23 +227,24 @@ export default function ManagerRefundForm({ formData, managerName, id }: Props) 
       />
       <div className='grid grid-cols-2 items-center w-full gap-3'>
         <label className='underline underline-offset-4' htmlFor='isAdmin'>
-          Sign Off?
+          Approve or Deny
         </label>
-        <Switch
-          name='isAdmin'
-          checked={formState.reviewed}
-          onChange={() => setFormState({ ...formState, reviewed: !formState.reviewed })}
-          className={`${
-            formState.reviewed ? 'bg-dukeBlue' : 'bg-powderBlue'
-          } relative inline-flex h-6 w-11 items-center rounded-full transition-all duration-300 ease-in-out`}
-        >
-          <span className='sr-only'>Ticket Reviewed?</span>
-          <span
-            className={`${
-              formState.reviewed ? 'translate-x-6' : 'translate-x-1'
-            } inline-block h-4 w-4 transform rounded-full bg-ivory transition`}
-          />
-        </Switch>
+        <div className='grid grid-cols-2 gap-3'>
+          <button
+            type='button'
+            onClick={() => handleApprove()}
+            className='bg-green-500 hover:bg-green-700 transition-all duration-200 ease-in-out px-2 py-3 rounded-md'
+          >
+            Approve
+          </button>
+          <button
+            type='button'
+            onClick={() => handleDenied()}
+            className='bg-red-500 hover:bg-red-700 transition-all duration-200 ease-in-out px-2 py-3 rounded-md'
+          >
+            Deny
+          </button>
+        </div>
       </div>
       <button
         className='bg-trueBlue hover:bg-powderBlue hover:text-jet transition-all duration-200 ease-in-out w-full px-2 py-3 rounded-md'

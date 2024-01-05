@@ -30,7 +30,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   const reasonForRefund = JSON.parse(formData.reasonForRefund ?? '[]');
 
-  if (formData.reviewed) {
+  if (formData.denied || formData.approved) {
     return (
       <div className='w-full flex flex-col gap-5'>
         <div className='w-full flex flex-col gap-5 border-2 border-trueBlue rounded-md p-5'>
@@ -93,6 +93,14 @@ export default async function Page({ params }: { params: { id: string } }) {
             value={formData.callsDownloadedAndSavedDate ?? 'N/A'}
           />
           <TicketInformation label={'Manager That Signed Off'} value={formData.generalManagerSignOff ?? 'N/A'} />
+          <TicketInformation
+            label={formData.approved ? 'Why Approved' : 'Why Denied'}
+            value={formData.whyApprovedDenied ?? 'N/A'}
+          />
+          <TicketInformation
+            label={formData.approved ? 'Approved Date' : 'Denied Date'}
+            value={formData.approvedDeniedDate ?? 'N/A'}
+          />
         </div>
       </div>
     );

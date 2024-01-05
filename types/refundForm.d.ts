@@ -23,5 +23,8 @@ export type RefundFormType = {
   givenToDataAnalysisForLostSaleAccountabilityDate: string | null;
   callsDownloadedAndSavedDate: string | null;
   generalManagerSignOff: string | null;
-  reviewed: boolean;
+  approved: boolean;
+  denied: boolean;
+  whyApprovedDenied: string;
+  approvedDeniedDate: string | null;
 };

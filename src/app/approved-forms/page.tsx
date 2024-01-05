@@ -20,11 +20,7 @@ export default async function Page() {
 
   if (!isAdmin?.isAdmin) redirect('/');
 
-  const { data } = await supabase
-    .from('refundRequests')
-    .select('*')
-    .match({ approved: false })
-    .match({ denied: false });
+  const { data } = await supabase.from('refundRequests').select('*').match({ approved: true });
 
   return (
     <div>

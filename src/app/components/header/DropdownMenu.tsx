@@ -60,8 +60,9 @@ export default function DropdownMenu() {
         >
           <div className='py-1'>
             {isAdmin && <DropdownMenuItem href={'/create-user'}>Create User</DropdownMenuItem>}
-            {isAdmin && <DropdownMenuItem href='/completed-forms'>View Fulfilled Forms</DropdownMenuItem>}
             {isAdmin && <DropdownMenuItem href='/view-forms'>View Unfulfilled Forms</DropdownMenuItem>}
+            {isAdmin && <DropdownMenuItem href='/approved-forms'>View Approved Forms</DropdownMenuItem>}
+            {isAdmin && <DropdownMenuItem href='/denied-forms'>View Denied Forms</DropdownMenuItem>}
             <Menu.Button
               className={
                 'transition-all duration-200 ease-in-out block px-4 py-2 text-sm hover:bg-powderBlue text-ivory hover:text-jet hover:no-underline w-full text-left'
