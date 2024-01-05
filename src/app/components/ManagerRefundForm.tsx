@@ -81,6 +81,9 @@ export default function ManagerRefundForm({ formData, managerName, id }: Props) 
         <option value={'cancellation'}>Cancellation</option>
         <option value={'authorized return'}>Authorized Return</option>
         <option value='chargeback'>Chargeback</option>
+        <option value='goodwill'>Goodwill Refund</option>
+        <option value='core refund'>Core Refund</option>
+        <option value='warranty reimbursement'>Warranty Reimbursement</option>
       </SelectInput>
       <SelectInput
         label='Payment Method'
