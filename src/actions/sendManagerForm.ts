@@ -47,3 +47,19 @@ export async function sendDeniedEmail(name: string, notes: string, orderNumber: 
     });
   });
 }
+
+export async function approveForm(id: string | number) {
+  const now = new Date();
+  const date = now.toLocaleDateString();
+  id = Number(id);
+  const { error } = await supabase
+    .from('refundRequests')
+    .update({ completed: true, completedDate: date })
+    .match({ id });
+
+  if (error) {
+    return false;
+  } else {
+    return true;
+  }
+}

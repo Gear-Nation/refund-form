@@ -62,6 +62,7 @@ export default function DropdownMenu() {
             {isAdmin && <DropdownMenuItem href={'/create-user'}>Create User</DropdownMenuItem>}
             {isAdmin && <DropdownMenuItem href='/view-forms'>View Unfulfilled Forms</DropdownMenuItem>}
             {isAdmin && <DropdownMenuItem href='/approved-forms'>View Approved Forms</DropdownMenuItem>}
+            {isAdmin && <DropdownMenuItem href='/completed-forms'>View Completed Forms</DropdownMenuItem>}
             {isAdmin && <DropdownMenuItem href='/denied-forms'>View Denied Forms</DropdownMenuItem>}
             <Menu.Button
               className={
