@@ -20,10 +20,16 @@ export default async function Page({ params }: { params: { id: string } }) {
   } = await supabase.auth.getUser();
   const userEmail = user?.email;
 
-  const { data: isAdmin } = await supabase.from('whitelist').select('isAdmin').match({ email: userEmail }).single();
+  const { data: isAdminData } = await supabase.from('whitelist').select('isAdmin').match({ email: userEmail }).single();
+  const { data: isManagerData } = await supabase
+    .from('whitelist')
+    .select('isManager')
+    .match({ email: userEmail })
+    .single();
   const { data: userName } = await supabase.from('employees').select('name').match({ email: userEmail }).single();
-
-  if (!isAdmin) redirect('/');
+  const isAdmin = isAdminData?.isAdmin;
+  const isManager = isManagerData?.isManager;
+  if (!isManager) redirect('/');
 
   const { data } = await supabase.from('refundRequests').select('*').match({ id }).single();
 
@@ -108,7 +114,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     );
   }
 
-  if (formData.approved && !formData.completed) {
+  if (formData.approved && !formData.completed && isManager) {
     return (
       <div className='w-full flex flex-col gap-5'>
         <div className='w-full flex flex-col gap-5 border-2 border-trueBlue rounded-md p-5'>
@@ -277,7 +283,6 @@ export default async function Page({ params }: { params: { id: string } }) {
         <TicketInformation label='Reason(s) for Refund' value={reasonForRefund.join(', ') ?? 'N/A'} />
         <TicketInformation label='Type of Return' value={capitalizeFirstLetters(formData.typeOfReturn as string)} />
       </div>
-      <ManagerRefundForm managerName={userName?.name} id={id} formData={formData} />
     </div>
   );
 }

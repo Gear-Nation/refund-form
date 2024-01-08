@@ -9,6 +9,7 @@ import DropdownMenuItem from './DropdownMenuItem';
 
 export default function DropdownMenu() {
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isManager, setIsManager] = useState(false);
   const supabase = createClientComponentClient({
     supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_API,
     supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -26,7 +27,9 @@ export default function DropdownMenu() {
       const email = user?.data?.user?.email;
 
       const { data: isAdmin } = await supabase.from('whitelist').select('isAdmin').match({ email }).single();
+      const { data: isManager } = await supabase.from('whitelist').select('isManager').match({ email }).single();
       setIsAdmin(isAdmin?.isAdmin);
+      setIsManager(isManager?.isManager);
     }
 
     checkAdmin();
@@ -60,10 +63,10 @@ export default function DropdownMenu() {
         >
           <div className='py-1'>
             {isAdmin && <DropdownMenuItem href={'/create-user'}>Create User</DropdownMenuItem>}
-            {isAdmin && <DropdownMenuItem href='/view-forms'>View Unfulfilled Forms</DropdownMenuItem>}
-            {isAdmin && <DropdownMenuItem href='/approved-forms'>View Approved Forms</DropdownMenuItem>}
-            {isAdmin && <DropdownMenuItem href='/completed-forms'>View Completed Forms</DropdownMenuItem>}
-            {isAdmin && <DropdownMenuItem href='/denied-forms'>View Denied Forms</DropdownMenuItem>}
+            {isManager && <DropdownMenuItem href='/view-forms'>View Unfulfilled Forms</DropdownMenuItem>}
+            {isManager && <DropdownMenuItem href='/approved-forms'>View Approved Forms</DropdownMenuItem>}
+            {isManager && <DropdownMenuItem href='/completed-forms'>View Completed Forms</DropdownMenuItem>}
+            {isManager && <DropdownMenuItem href='/denied-forms'>View Denied Forms</DropdownMenuItem>}
             <Menu.Button
               className={
                 'transition-all duration-200 ease-in-out block px-4 py-2 text-sm hover:bg-powderBlue text-ivory hover:text-jet hover:no-underline w-full text-left'

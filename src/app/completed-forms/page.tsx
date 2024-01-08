@@ -16,9 +16,9 @@ export default async function Page() {
 
   const userEmail = user?.email;
 
-  const { data: isAdmin } = await supabase.from('whitelist').select('isAdmin').match({ email: userEmail }).single();
+  const { data: isManager } = await supabase.from('whitelist').select('isManager').match({ email: userEmail }).single();
 
-  if (!isAdmin?.isAdmin) redirect('/');
+  if (!isManager?.isManager) redirect('/');
 
   const { data } = await supabase.from('refundRequests').select('*').match({ completed: true });
 

@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import RefundForm from './components/RefundForm';
 import { cookies } from 'next/headers';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
