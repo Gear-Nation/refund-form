@@ -33,9 +33,10 @@ interface Props {
   formData: RefundFormType;
   managerName: string;
   id: string;
+  isAdmin: boolean;
 }
 
-export default function ManagerRefundForm({ formData, managerName, id }: Props) {
+export default function ManagerRefundForm({ formData, managerName, id, isAdmin }: Props) {
   const [loading, setLoading] = useState(false);
   const [notesModalOpen, setNotesModelOpen] = useState(false);
   const [formState, setFormState] = useState({
@@ -225,6 +226,29 @@ export default function ManagerRefundForm({ formData, managerName, id }: Props) 
         onchange={(e) => setFormState({ ...formState, callsDownloadedAndSavedDate: e.target.value })}
         name='calledDownloadedDate'
       />
+      {isAdmin && (
+        <div className='grid grid-cols-2 items-center w-full gap-3'>
+          <label className='underline underline-offset-4' htmlFor='isAdmin'>
+            Approve or Deny
+          </label>
+          <div className='grid grid-cols-2 gap-3'>
+            <button
+              type='button'
+              onClick={() => handleApprove()}
+              className='bg-green-500 hover:bg-green-700 transition-all duration-200 ease-in-out px-2 py-3 rounded-md'
+            >
+              Approve
+            </button>
+            <button
+              type='button'
+              onClick={() => handleDenied()}
+              className='bg-red-500 hover:bg-red-700 transition-all duration-200 ease-in-out px-2 py-3 rounded-md'
+            >
+              Deny
+            </button>
+          </div>
+        </div>
+      )}
       <div className='grid grid-cols-2 items-center w-full gap-3'>
         <label className='underline underline-offset-4' htmlFor='isAdmin'>
           Approve or Deny

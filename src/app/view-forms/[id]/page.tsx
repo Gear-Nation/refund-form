@@ -283,6 +283,7 @@ export default async function Page({ params }: { params: { id: string } }) {
         <TicketInformation label='Reason(s) for Refund' value={reasonForRefund.join(', ') ?? 'N/A'} />
         <TicketInformation label='Type of Return' value={capitalizeFirstLetters(formData.typeOfReturn as string)} />
       </div>
+      <ManagerRefundForm managerName={userName?.name} id={id} formData={formData} isAdmin={isAdmin} />
     </div>
   );
 }
