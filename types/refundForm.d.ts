@@ -29,4 +29,5 @@ export type RefundFormType = {
   approvedDeniedDate: string | null;
   completed: boolean;
   completedDate: string | null;
+  notes: string | null;
 };

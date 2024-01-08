@@ -1,12 +1,12 @@
 'use client';
 
+import { sendDeniedEmail, sendManagerForm } from '@/actions/sendManagerForm';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
+import { RefundFormType } from '../../../types/refundForm';
 import Input from './Input';
 import SelectInput from './SelectInput';
-import { sendManagerForm, sendDeniedEmail } from '@/actions/sendManagerForm';
-import { RefundFormType } from '../../../types/refundForm';
 import TextArea from './TextArea';
-import { useRouter } from 'next/navigation';
 
 export type ManagerFormType = {
   refundType: string;
@@ -27,6 +27,7 @@ export type ManagerFormType = {
   denied: boolean;
   whyApprovedDenied: string;
   approvedDeniedDate: string;
+  notes: string;
 };
 
 interface Props {
@@ -57,7 +58,8 @@ export default function ManagerRefundForm({ formData, managerName, id, isAdmin }
     approved: formData.approved ?? false,
     generalManagerSignOff: '',
     whyApprovedDenied: '',
-    approvedDeniedDate: ''
+    approvedDeniedDate: '',
+    notes: formData.notes ?? ''
   });
   const router = useRouter();
 
@@ -226,6 +228,13 @@ export default function ManagerRefundForm({ formData, managerName, id, isAdmin }
         onchange={(e) => setFormState({ ...formState, callsDownloadedAndSavedDate: e.target.value })}
         name='calledDownloadedDate'
       />
+      <TextArea
+        label='Notes'
+        value={formState.notes}
+        onchange={(e) => setFormState({ ...formState, notes: e.target.value })}
+        name='notes'
+      />
+
       {isAdmin && (
         <div className='grid grid-cols-2 items-center w-full gap-3'>
           <label className='underline underline-offset-4' htmlFor='isAdmin'>

@@ -109,6 +109,7 @@ export default async function Page({ params }: { params: { id: string } }) {
             value={formData.approvedDeniedDate ?? 'N/A'}
           />
           <TicketInformation label={'Completed Date'} value={formData.completedDate ?? 'N/A'} />
+          <TicketInformation label={'Notes'} value={formData.notes ?? 'N/A'} />
         </div>
       </div>
     );
@@ -185,6 +186,7 @@ export default async function Page({ params }: { params: { id: string } }) {
             label={formData.approved ? 'Approved Date' : 'Denied Date'}
             value={formData.approvedDeniedDate ?? 'N/A'}
           />
+          <TicketInformation label={'Notes'} value={formData.notes ?? 'N/A'} />
           <MoveToAlfabot id={id} />
         </div>
       </div>
@@ -262,6 +264,7 @@ export default async function Page({ params }: { params: { id: string } }) {
             label={formData.approved ? 'Approved Date' : 'Denied Date'}
             value={formData.approvedDeniedDate ?? 'N/A'}
           />
+          <TicketInformation label={'Notes'} value={formData.notes ?? 'N/A'} />
         </div>
       </div>
     );
