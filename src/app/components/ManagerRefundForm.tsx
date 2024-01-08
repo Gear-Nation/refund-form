@@ -249,27 +249,6 @@ export default function ManagerRefundForm({ formData, managerName, id, isAdmin }
           </div>
         </div>
       )}
-      <div className='grid grid-cols-2 items-center w-full gap-3'>
-        <label className='underline underline-offset-4' htmlFor='isAdmin'>
-          Approve or Deny
-        </label>
-        <div className='grid grid-cols-2 gap-3'>
-          <button
-            type='button'
-            onClick={() => handleApprove()}
-            className='bg-green-500 hover:bg-green-700 transition-all duration-200 ease-in-out px-2 py-3 rounded-md'
-          >
-            Approve
-          </button>
-          <button
-            type='button'
-            onClick={() => handleDenied()}
-            className='bg-red-500 hover:bg-red-700 transition-all duration-200 ease-in-out px-2 py-3 rounded-md'
-          >
-            Deny
-          </button>
-        </div>
-      </div>
       <button
         className='bg-trueBlue hover:bg-powderBlue hover:text-jet transition-all duration-200 ease-in-out w-full px-2 py-3 rounded-md'
         type='submit'
